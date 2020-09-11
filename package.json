@@ -1,0 +1,38 @@
+{
+  "name": "supermarketcheckout",
+  "version": "1.0.0",
+  "description": "A supermarket checkout website",
+  "main": "index.js",
+  "scripts": {
+    "cm": "git-cz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PedroJesusRomeroOrtega/SupermarketCheckout.git"
+  },
+  "keywords": [
+    ".net",
+    "core",
+    "angular"
+  ],
+  "author": "Pedro Jesús Romero Ortega",
+  "license": "SEE LICENSE IN LICENSE FILE",
+  "homepage": "https://github.com/PedroJesusRomeroOrtega/SupermarketCheckout#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^11.0.0",
+    "commitizen": "^4.2.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^4.3.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
+}
