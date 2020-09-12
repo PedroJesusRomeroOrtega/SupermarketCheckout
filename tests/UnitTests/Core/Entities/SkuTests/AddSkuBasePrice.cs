@@ -18,7 +18,7 @@ namespace UnitTests.Core.Entities.SkuTests
 
             var firstSkuPrice = sku.SkuPrices.Single();
 
-            Assert.Equal(firstSkuPrice.PricePerUnit, _testPricePerUnit);
+            Assert.Equal( _testPricePerUnit,firstSkuPrice.PricePerUnit);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace UnitTests.Core.Entities.SkuTests
             sku.AddSkuBasePrice(_testPricePerUnit2);
 
             Assert.Single(sku.SkuPrices);
-            Assert.Equal(sku.SkuPrices.Single().PricePerUnit, _testPricePerUnit2);
+            Assert.Equal( _testPricePerUnit2, sku.SkuPrices.Single().PricePerUnit);
         }
     }
 }
