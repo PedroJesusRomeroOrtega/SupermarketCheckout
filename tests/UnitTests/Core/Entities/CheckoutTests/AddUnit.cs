@@ -1,8 +1,8 @@
-﻿using Core.Entities;
+﻿using SupermarkerCheckout.Core.Entities;
 using System.Linq;
 using Xunit;
 
-namespace UnitTests.Core.Entities.CheckoutTests
+namespace SupermarkerCheckout.UnitTests.Core.Entities.CheckoutTests
 {
     public class AddUnit
     {

@@ -1,5 +1,5 @@
-﻿using Core.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SupermarkerCheckout.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

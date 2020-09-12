@@ -1,4 +1,4 @@
-﻿namespace Core.Entities
+﻿namespace SupermarkerCheckout.Core.Entities
 {
     public abstract class BaseEntity
     {

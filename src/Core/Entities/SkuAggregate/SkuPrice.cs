@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.Entities
+namespace SupermarkerCheckout.Core.Entities
 {
     public class SkuPrice : BaseEntity
     {

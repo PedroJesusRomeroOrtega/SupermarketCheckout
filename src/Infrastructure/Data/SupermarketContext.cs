@@ -1,13 +1,10 @@
-﻿using Core.Entities;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using SupermarkerCheckout.Core.Entities;
 using System.Reflection;
-using System.Text;
 
 namespace SupermarkerCheckout.Infrastructure.Data
 {
-   public class SupermarketContext:DbContext
+    public class SupermarketContext : DbContext
     {
         public SupermarketContext(DbContextOptions<SupermarketContext> options) : base(options)
         {

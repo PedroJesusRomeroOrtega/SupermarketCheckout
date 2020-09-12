@@ -1,8 +1,8 @@
-﻿using Core.Entities;
+﻿using SupermarkerCheckout.Core.Entities;
 using System.Linq;
 using Xunit;
 
-namespace UnitTests.Core.Entities.SkuTests
+namespace SupermarkerCheckout.UnitTests.Core.Entities.SkuTests
 {
     public class AddSkuBasePrice
     {
@@ -18,7 +18,7 @@ namespace UnitTests.Core.Entities.SkuTests
 
             var firstSkuPrice = sku.SkuPrices.Single();
 
-            Assert.Equal( _testPricePerUnit,firstSkuPrice.PricePerUnit);
+            Assert.Equal(_testPricePerUnit, firstSkuPrice.PricePerUnit);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace UnitTests.Core.Entities.SkuTests
             sku.AddSkuBasePrice(_testPricePerUnit2);
 
             Assert.Single(sku.SkuPrices);
-            Assert.Equal( _testPricePerUnit2, sku.SkuPrices.Single().PricePerUnit);
+            Assert.Equal(_testPricePerUnit2, sku.SkuPrices.Single().PricePerUnit);
         }
     }
 }

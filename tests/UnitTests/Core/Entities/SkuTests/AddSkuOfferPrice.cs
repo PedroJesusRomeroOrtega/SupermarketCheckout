@@ -1,9 +1,9 @@
-﻿using Core.Entities;
+﻿using SupermarkerCheckout.Core.Entities;
 using System;
 using System.Linq;
 using Xunit;
 
-namespace UnitTests.Core.Entities.SkuTests
+namespace SupermarkerCheckout.UnitTests.Core.Entities.SkuTests
 {
     public class AddSkuOfferPrice
     {
@@ -32,9 +32,9 @@ namespace UnitTests.Core.Entities.SkuTests
         {
             var sku = new Sku(_testSkuName);
             sku.AddSkuOfferPrice(_testMinNumberUnits1, _testPricePerUnit, _testOfferStart1);
-            sku.AddSkuOfferPrice(_testMinNumberUnits1, _testPricePerUnit, _testOfferStart2,_testOfferEnd2);
+            sku.AddSkuOfferPrice(_testMinNumberUnits1, _testPricePerUnit, _testOfferStart2, _testOfferEnd2);
 
-            Assert.Equal(2,sku.SkuPrices.Count());
+            Assert.Equal(2, sku.SkuPrices.Count());
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace UnitTests.Core.Entities.SkuTests
             var sku = new Sku(_testSkuName);
             sku.AddSkuOfferPrice(_testMinNumberUnits1, _testPricePerUnit, _testOfferStart1);
 
-            Assert.Throws<Exception>(()=> sku.AddSkuOfferPrice(_testMinNumberUnits1, _testPricePerUnit, _testOfferStart3));
+            Assert.Throws<Exception>(() => sku.AddSkuOfferPrice(_testMinNumberUnits1, _testPricePerUnit, _testOfferStart3));
         }
     }
 }

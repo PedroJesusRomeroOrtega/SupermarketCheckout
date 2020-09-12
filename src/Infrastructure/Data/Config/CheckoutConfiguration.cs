@@ -1,7 +1,6 @@
-﻿using Core.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
+using SupermarkerCheckout.Core.Entities;
 
 namespace SupermarkerCheckout.Infrastructure.Data.Config
 {
