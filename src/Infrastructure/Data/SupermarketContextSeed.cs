@@ -13,6 +13,7 @@ namespace SupermarkerCheckout.Infrastructure.Data
             if (!await supermarketContext.Skus.AnyAsync())
             {
                 await supermarketContext.Skus.AddRangeAsync(GetPreconfiguredSkus());
+                await supermarketContext.SaveChangesAsync();
             }
         }
 

@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SupermarkerCheckout.Infrastructure.Data;
+using SupermarketCheckout.Core.Interfaces;
 
-namespace WebAplication
+namespace SupermarkerCheckout.WebAplication
 {
     public class Startup
     {
@@ -20,6 +22,9 @@ namespace WebAplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //TODO: look for the best place to addDBcontext
+            services.AddDbContext<SupermarketContext>(opt => opt.UseInMemoryDatabase("Supermarket"));
+            services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

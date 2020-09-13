@@ -1,6 +1,6 @@
 ﻿namespace SupermarkerCheckout.Core.Entities
 {
-    public class CheckoutUnit
+    public class CheckoutUnit : BaseEntity
     {
         public int NumberOfUnits { get; private set; }
 
@@ -8,7 +8,7 @@
 
         public int CheckOutId { get; private set; }
 
-        public CheckoutUnit(int numberOfUnits,int skuId)
+        public CheckoutUnit(int numberOfUnits, int skuId)
         {
             //TODO: guard number of units greater than 0
             NumberOfUnits = numberOfUnits;
