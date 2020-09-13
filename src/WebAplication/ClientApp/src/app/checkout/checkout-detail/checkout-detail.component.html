@@ -1,0 +1,10 @@
+<ul>
+  <li *ngFor="let sku of skus">
+    <app-sku [sku]=sku></app-sku>
+  </li>
+</ul>
+<div>
+  <button mat-fab routerLink="/checkouts" aria-label="Button to go back to checkout list">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+</div>
