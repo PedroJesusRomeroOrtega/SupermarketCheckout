@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SupermarkerCheckout.Core.Entities;
+using SupermarketCheckout.Core.Entities;
 using SupermarketCheckout.Core.Interfaces;
 
-namespace WebAplication.Controllers
+namespace SupermarketCheckout.WebAplication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

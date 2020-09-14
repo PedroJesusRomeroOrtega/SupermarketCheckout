@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SupermarkerCheckout.Core.Entities
+namespace SupermarketCheckout.Core.Entities
 {
     public class Checkout : BaseEntity
     {

@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SupermarkerCheckout.Infrastructure.Data;
+using SupermarketCheckout.Infrastructure.Data;
 using SupermarketCheckout.Core.Interfaces;
 
-namespace SupermarkerCheckout.WebAplication
+namespace SupermarketCheckout.WebAplication
 {
     public class Startup
     {

@@ -1,4 +1,4 @@
-﻿namespace SupermarkerCheckout.Core.Entities
+﻿namespace SupermarketCheckout.Core.Entities
 {
     public class CheckoutUnit : BaseEntity
     {
