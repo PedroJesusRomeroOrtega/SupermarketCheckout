@@ -1,4 +1,5 @@
-﻿using SupermarkerCheckout.Core.Entities;
+﻿using Ardalis.Specification;
+using SupermarketCheckout.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,15 +11,13 @@ namespace SupermarketCheckout.Core.Interfaces
     {
         Task<T> GetByIdAsync(int id);
         Task<IReadOnlyList<T>> ListAllAsync();
-        //Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
+        Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
         Task<T> AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
-
-        //TODO: review these methods
-        //Task<int> CountAsync(ISpecification<T> spec);
-        //Task<T> FirstAsync(ISpecification<T> spec);
-        //Task<T> FirstOrDefaultAsync(ISpecification<T> spec);
+        Task<int> CountAsync(ISpecification<T> spec);
+        Task<T> FirstAsync(ISpecification<T> spec);
+        Task<T> FirstOrDefaultAsync(ISpecification<T> spec);
     }
 
 }
