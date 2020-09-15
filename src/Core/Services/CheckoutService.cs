@@ -1,4 +1,5 @@
-﻿using SupermarketCheckout.Core.Entities;
+﻿using Ardalis.GuardClauses;
+using SupermarketCheckout.Core.Entities;
 using SupermarketCheckout.Core.Interfaces;
 using SupermarketCheckout.Core.Specifications;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace SupermarketCheckout.Core.Services
             }
             var checkoutSpecification = new CheckoutWithUnitsSpecification(checkoutId.Value);
             var checkout = await _checkoutRepository.FirstAsync(checkoutSpecification);
-            //TODO: add guard if checkout is null.
+            Guard.Against.Null(checkout, nameof(checkout));
             return checkout;
         }
 
