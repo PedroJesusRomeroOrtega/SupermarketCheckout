@@ -6,6 +6,7 @@ import { CheckoutDetailComponent } from './checkout-detail/checkout-detail.compo
 const checkoutRoutes: Routes = [
   { path: 'checkouts', component: CheckoutListComponent },
   { path: 'checkout-detail', component: CheckoutDetailComponent },
+  { path: 'checkout-detail/:id', component: CheckoutDetailComponent },
 ];
 
 @NgModule({
