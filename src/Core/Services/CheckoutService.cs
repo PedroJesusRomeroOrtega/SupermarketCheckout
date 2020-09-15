@@ -1,5 +1,6 @@
 ﻿using SupermarketCheckout.Core.Entities;
 using SupermarketCheckout.Core.Interfaces;
+using SupermarketCheckout.Core.Specifications;
 using System.Threading.Tasks;
 
 namespace SupermarketCheckout.Core.Services
@@ -18,15 +19,17 @@ namespace SupermarketCheckout.Core.Services
             {
                 return await _checkoutRepository.AddAsync(new Checkout());
             }
-            var checkout = await _checkoutRepository.GetByIdAsync(checkoutId.Value);
+            var checkoutSpecification = new CheckoutWithUnitsSpecification(checkoutId.Value);
+            var checkout = await _checkoutRepository.FirstAsync(checkoutSpecification);
             //TODO: add guard if checkout is null.
             return checkout;
         }
 
-        public async Task AddUnits(Checkout checkout, int skuId, int numberOfUnits = 1)
+        public async Task<int> AddUnits(Checkout checkout, int skuId, int numberOfUnits = 1)
         {
-            checkout.AddUnit(skuId, numberOfUnits);
+            var totalUnits = checkout.AddUnit(skuId, numberOfUnits);
             await _checkoutRepository.UpdateAsync(checkout);
+            return totalUnits;
         }
     }
 }

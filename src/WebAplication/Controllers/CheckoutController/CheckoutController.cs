@@ -22,13 +22,13 @@ namespace SupermarketCheckout.WebAplication.Controllers.CheckoutController
         [HttpPost]
         public async Task<ActionResult<CheckoutUnitDto>> AddUnit(CheckoutUnitDto checkoutUnitDto)
         {
-            var checkout = await _checkoutService.GetOrCreateCheckout(checkoutUnitDto.CheckOutId);
-            await _checkoutService.AddUnits(checkout, checkoutUnitDto.SkuId, checkoutUnitDto.NumberOfUnits);
+            var checkout = await _checkoutService.GetOrCreateCheckout(checkoutUnitDto.CheckoutId);
+            var totalUnits = await _checkoutService.AddUnits(checkout, checkoutUnitDto.SkuId, checkoutUnitDto.NumberOfUnits);
 
-            var totalPrice = await _skuService.CalculatePrice(checkoutUnitDto.SkuId, checkoutUnitDto.NumberOfUnits);
+            var totalPrice = await _skuService.CalculatePrice(checkoutUnitDto.SkuId, totalUnits);
 
             return CreatedAtAction(nameof(AddUnit), new { id = checkout.Id },
-                new CheckoutUnitDto() { CheckOutId = checkout.Id, SkuId = checkoutUnitDto.SkuId, NumberOfUnits = checkoutUnitDto.NumberOfUnits, TotalPrice = totalPrice });
+                new CheckoutUnitDto() { CheckoutId = checkout.Id, SkuId = checkoutUnitDto.SkuId, NumberOfUnits = totalUnits, TotalPrice = totalPrice });
         }
     }
 }

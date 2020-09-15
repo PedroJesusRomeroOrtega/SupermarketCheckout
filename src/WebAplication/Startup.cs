@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SupermarketCheckout.Infrastructure.Data;
 using SupermarketCheckout.Core.Interfaces;
+using SupermarketCheckout.WebAplication.Configuration;
 
 namespace SupermarketCheckout.WebAplication
 {
@@ -24,7 +25,7 @@ namespace SupermarketCheckout.WebAplication
         {
             //TODO: look for the best place to addDBcontext
             services.AddDbContext<SupermarketContext>(opt => opt.UseInMemoryDatabase("Supermarket"));
-            services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
+            services.AddCoreServices(Configuration);
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

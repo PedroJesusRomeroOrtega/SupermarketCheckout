@@ -1,3 +1,4 @@
+import { SkuService } from './../sku.service';
 import { Component, Inject, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Sku } from './sku';
@@ -8,19 +9,9 @@ import { Sku } from './sku';
   styleUrls: ['./checkout-detail.component.scss'],
 })
 export class CheckoutDetailComponent implements OnInit {
-  skus: Sku[];
+  skus$ = this.skuService.skus$;
 
-  constructor(
-    private http: HttpClient,
-    @Inject('BASE_URL') private baseUrl: string
-  ) {}
+  constructor(private skuService: SkuService) {}
 
-  ngOnInit(): void {
-    this.http.get<Sku[]>(this.baseUrl + 'api/sku').subscribe(
-      (skus) => {
-        this.skus = skus;
-      },
-      (error) => console.error(error)
-    );
-  }
+  ngOnInit(): void {}
 }

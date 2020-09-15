@@ -1,6 +1,6 @@
-<ul>
+<ul *ngIf="skus$ | async as skus">
   <li *ngFor="let sku of skus">
-    <app-sku [sku]=sku></app-sku>
+    <app-sku [sku]="sku"></app-sku>
   </li>
 </ul>
 <div>

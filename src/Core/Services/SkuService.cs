@@ -1,5 +1,6 @@
 ﻿using SupermarketCheckout.Core.Entities;
 using SupermarketCheckout.Core.Interfaces;
+using SupermarketCheckout.Core.Specifications;
 using System.Threading.Tasks;
 
 namespace SupermarketCheckout.Core.Services
@@ -15,7 +16,8 @@ namespace SupermarketCheckout.Core.Services
 
         public async Task<decimal> CalculatePrice(int skuId, int numberOfUnits)
         {
-            var sku = await _skuRepository.GetByIdAsync(skuId);
+            var skuSpec = new SkuWithPricesSpecification(skuId);
+            var sku = await _skuRepository.FirstAsync(skuSpec);
             var totalPrice = sku.CalculatePrice(numberOfUnits);
             return totalPrice;
         }

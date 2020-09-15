@@ -6,6 +6,6 @@ namespace SupermarketCheckout.Core.Interfaces
     public interface ICheckoutService
     {
         Task<Checkout> GetOrCreateCheckout(int? checkoutId);
-        Task AddUnits(Checkout checkout, int skuId, int numberOfUnits = 1);
+        Task<int> AddUnits(Checkout checkout, int skuId, int numberOfUnits = 1);
     }
 }
