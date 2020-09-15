@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SupermarkerCheckout.Core.Entities;
+using SupermarketCheckout.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SupermarkerCheckout.Infrastructure.Data
+namespace SupermarketCheckout.Infrastructure.Data
 {
     public class SupermarketContextSeed
     {

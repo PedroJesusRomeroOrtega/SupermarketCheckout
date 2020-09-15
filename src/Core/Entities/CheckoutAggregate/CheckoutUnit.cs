@@ -1,4 +1,4 @@
-﻿namespace SupermarkerCheckout.Core.Entities
+﻿namespace SupermarketCheckout.Core.Entities
 {
     public class CheckoutUnit : BaseEntity
     {
@@ -15,10 +15,11 @@
             SkuId = skuId;
         }
 
-        public void AddNumberOfUnits(int numberOfUnits)
+        public int AddNumberOfUnits(int numberOfUnits)
         {
             //TODO: guard number of units greater than 0
             NumberOfUnits += numberOfUnits;
+            return NumberOfUnits;
         }
     }
 }

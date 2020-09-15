@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using SupermarkerCheckout.Infrastructure.Data;
+using SupermarketCheckout.Infrastructure.Data;
 
-namespace SupermarkerCheckout.WebAplication
+namespace SupermarketCheckout.WebAplication
 {
     public class Program
     {

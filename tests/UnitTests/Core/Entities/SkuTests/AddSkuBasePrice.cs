@@ -1,8 +1,8 @@
-﻿using SupermarkerCheckout.Core.Entities;
+﻿using SupermarketCheckout.Core.Entities;
 using System.Linq;
 using Xunit;
 
-namespace SupermarkerCheckout.UnitTests.Core.Entities.SkuTests
+namespace SupermarketCheckout.UnitTests.Core.Entities.SkuTests
 {
     public class AddSkuBasePrice
     {

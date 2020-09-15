@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SupermarkerCheckout.Core.Entities
+namespace SupermarketCheckout.Core.Entities
 {
     public class Sku : BaseEntity
     {
@@ -37,6 +37,15 @@ namespace SupermarkerCheckout.Core.Entities
             }
 
             _skuPrices.Add(new SkuPrice(minUnitsNumber, pricePerUnit, offerStart, offerEnd));
+        }
+
+        public decimal CalculatePrice(int numberOfUnits = 1)
+        {
+            //TODO: add guard numberunits more than 0
+           var skuPrice= SkuPrices
+                .OrderByDescending(sp=>sp.MinUnitsNumber)
+                .First(sp => sp.MinUnitsNumber <= numberOfUnits);
+            return skuPrice.PricePerUnit * numberOfUnits;
         }
     }
 }

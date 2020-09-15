@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SupermarkerCheckout.Infrastructure.Data;
+using SupermarketCheckout.Infrastructure.Data;
 using SupermarketCheckout.Core.Interfaces;
+using SupermarketCheckout.WebAplication.Configuration;
 
-namespace SupermarkerCheckout.WebAplication
+namespace SupermarketCheckout.WebAplication
 {
     public class Startup
     {
@@ -24,7 +25,7 @@ namespace SupermarkerCheckout.WebAplication
         {
             //TODO: look for the best place to addDBcontext
             services.AddDbContext<SupermarketContext>(opt => opt.UseInMemoryDatabase("Supermarket"));
-            services.AddScoped(typeof(IAsyncRepository<>), typeof(EfRepository<>));
+            services.AddCoreServices(Configuration);
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
