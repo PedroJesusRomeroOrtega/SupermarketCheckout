@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SupermarkerCheckout.Core.Entities;
+using SupermarketCheckout.Core.Entities;
 
-namespace SupermarkerCheckout.Infrastructure.Data.Config
+namespace SupermarketCheckout.Infrastructure.Data.Config
 {
     public class CheckoutUnitConfiguration : IEntityTypeConfiguration<CheckoutUnit>
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SupermarkerCheckout.Core.Entities
+namespace SupermarketCheckout.Core.Entities
 {
     public class Checkout : BaseEntity
     {
@@ -16,15 +16,15 @@ namespace SupermarkerCheckout.Core.Entities
             Date = DateTime.UtcNow;
         }
 
-        public void AddUnit(int skuId, int numberOfUnits = 1)
+        public int AddUnit(int skuId, int numberOfUnits = 1)
         {
             var existingUnit = _units.FirstOrDefault(u => u.SkuId == skuId);
             if (existingUnit==null)
             {
                 _units.Add(new CheckoutUnit(numberOfUnits, skuId));
-                return;
+                return numberOfUnits;
             }
-            existingUnit.AddNumberOfUnits(numberOfUnits);
+           return existingUnit.AddNumberOfUnits(numberOfUnits);
         }
     }
 }

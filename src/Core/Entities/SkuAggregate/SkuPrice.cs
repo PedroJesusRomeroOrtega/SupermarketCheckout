@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SupermarkerCheckout.Core.Entities
+namespace SupermarketCheckout.Core.Entities
 {
     public class SkuPrice : BaseEntity
     {
