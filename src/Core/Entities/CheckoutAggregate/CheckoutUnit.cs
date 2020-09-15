@@ -1,4 +1,6 @@
-﻿namespace SupermarketCheckout.Core.Entities
+﻿using Ardalis.GuardClauses;
+
+namespace SupermarketCheckout.Core.Entities
 {
     public class CheckoutUnit : BaseEntity
     {
@@ -10,14 +12,14 @@
 
         public CheckoutUnit(int numberOfUnits, int skuId)
         {
-            //TODO: guard number of units greater than 0
+            Guard.Against.OutOfRange(numberOfUnits, nameof(numberOfUnits), 0, int.MaxValue);
             NumberOfUnits = numberOfUnits;
             SkuId = skuId;
         }
 
         public int AddNumberOfUnits(int numberOfUnits)
         {
-            //TODO: guard number of units greater than 0
+            Guard.Against.OutOfRange(numberOfUnits, nameof(numberOfUnits), 0, int.MaxValue);
             NumberOfUnits += numberOfUnits;
             return NumberOfUnits;
         }

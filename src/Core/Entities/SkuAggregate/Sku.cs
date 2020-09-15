@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ardalis.GuardClauses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,8 +30,11 @@ namespace SupermarketCheckout.Core.Entities
 
         public void AddSkuOfferPrice(int minUnitsNumber, decimal pricePerUnit, DateTime offerStart, DateTime? offerEnd = null)
         {
-            //TODO: minUnitsNumber must be greater than 1.
-            if (SkuPrices.Any(sp => sp.MinUnitsNumber == minUnitsNumber && sp.OfferStart.HasValue && sp.ExistInRange(sp.OfferStart.Value, sp.OfferEnd, offerStart)))
+            Guard.Against.OutOfRange(minUnitsNumber, nameof(minUnitsNumber), 0, int.MaxValue);
+
+            if (SkuPrices.Any(sp => sp.MinUnitsNumber == minUnitsNumber 
+            && sp.OfferStart.HasValue
+            && sp.ExistInRange(sp.OfferStart.Value, sp.OfferEnd, offerStart)))
             {
                 //TODO: creates custom exceptions
                 throw new Exception("There are other offer for the same period");
@@ -41,8 +45,8 @@ namespace SupermarketCheckout.Core.Entities
 
         public decimal CalculatePrice(int numberOfUnits = 1)
         {
-            //TODO: add guard numberunits more than 0
-           var skuPrice= SkuPrices
+            Guard.Against.OutOfRange(numberOfUnits, nameof(numberOfUnits), 0, int.MaxValue);
+            var skuPrice= SkuPrices
                 .OrderByDescending(sp=>sp.MinUnitsNumber)
                 .First(sp => sp.MinUnitsNumber <= numberOfUnits);
             return skuPrice.PricePerUnit * numberOfUnits;
