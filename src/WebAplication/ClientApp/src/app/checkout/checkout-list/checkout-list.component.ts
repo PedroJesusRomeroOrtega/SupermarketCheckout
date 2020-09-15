@@ -9,7 +9,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckoutListComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'date'];
+  displayedColumns: string[] = ['id', 'date', 'totalPrice'];
   checkouts$ = this.checkoutService.checkouts$;
 
   constructor(private checkoutService: CheckoutService) {}
