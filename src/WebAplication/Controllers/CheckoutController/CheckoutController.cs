@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SupermarketCheckout.Core.Entities;
 using SupermarketCheckout.Core.Interfaces;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SupermarketCheckout.WebAplication.Controllers.CheckoutController
 {
@@ -27,7 +25,8 @@ namespace SupermarketCheckout.WebAplication.Controllers.CheckoutController
         {
             var checkouts = await _checkoutService.GetCheckouts();
             //TODO: add automapper
-            var checkoutsDto = checkouts.Select(c => new CheckoutDto() { Id = c.Id, Date = c.Date });
+            //TODO: calculate totalprice
+            var checkoutsDto = checkouts.Select(c => new CheckoutDto() { Id = c.Id, Date = c.Date, TotalPrice = 0m });
             return checkoutsDto.ToList();
         }
 
@@ -35,15 +34,15 @@ namespace SupermarketCheckout.WebAplication.Controllers.CheckoutController
         public async Task<ActionResult<CheckoutDto>> GetCheckout(int? checkoutId)
         {
             var checkout = await _checkoutService.GetOrCreateCheckout(checkoutId);
-            //TODO: add totalprice
-            return new CheckoutDto() { Id=checkout.Id,Date=checkout.Date};
+            var totalPricesTask = checkout.Units.Select(async u => await _skuService.CalculatePrice(u.SkuId, u.NumberOfUnits));
+            var totalPrices = await Task.WhenAll(totalPricesTask);
+            return new CheckoutDto() { Id = checkout.Id, Date = checkout.Date, TotalPrice = totalPrices.Sum() };
         }
 
         [HttpGet("checkoutUnits/{checkoutId:int?}")]
         public async Task<ActionResult<IEnumerable<CheckoutUnitDto>>> GetCheckoutUnits(int? checkoutId)
         {
             var checkout = await _checkoutService.GetOrCreateCheckout(checkoutId);
-            // TODO: use automapper to map to checkoutUnitDto
             var checkoutUnitsDtoTasks = checkout.Units.Select(async u => new CheckoutUnitDto() { CheckoutId = checkout.Id, SkuId = u.SkuId, NumberOfUnits = u.NumberOfUnits, TotalPrice = await _skuService.CalculatePrice(u.SkuId, u.NumberOfUnits) });
             var checkoutUnitsDto = await Task.WhenAll(checkoutUnitsDtoTasks);
             return checkoutUnitsDto;

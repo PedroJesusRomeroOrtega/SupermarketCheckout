@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SupermarketCheckout.Infrastructure.Data;
-using SupermarketCheckout.Core.Interfaces;
 using SupermarketCheckout.WebAplication.Configuration;
 
 namespace SupermarketCheckout.WebAplication
@@ -23,7 +22,7 @@ namespace SupermarketCheckout.WebAplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //TODO: look for the best place to addDBcontext
+            // TODO: refactor addDbContext to a method where we can choose between SQLServer or inMemory
             services.AddDbContext<SupermarketContext>(opt => opt.UseInMemoryDatabase("Supermarket"));
             services.AddCoreServices(Configuration);
             services.AddControllersWithViews();
