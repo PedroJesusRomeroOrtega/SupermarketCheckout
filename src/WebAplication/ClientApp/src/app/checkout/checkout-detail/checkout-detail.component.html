@@ -1,9 +1,11 @@
-<ng-container *ngIf="vm$ | async as vm">
-  Identificator: {{vm.checkout.id}}
-  <span *ngFor="let sku of vm.skusWithCheckoutUnits">
-    <app-sku-checkout [skuWithCheckoutUnit]="sku"></app-sku-checkout>
-  </span>
-</ng-container>
+<div *ngIf="vm$ | async as vm">
+  <h1>Checkout: {{vm.checkout.id}}</h1>
+  <div class="flex-container">
+    <app-sku-checkout *ngFor="let skuWithCheckoutUnit of vm.skusWithCheckoutUnits"
+      [skuWithCheckoutUnit]="skuWithCheckoutUnit">
+    </app-sku-checkout>
+  </div>
+</div>
 
 <div>
   <button mat-fab routerLink="/checkouts" aria-label="Button to go back to checkout list">

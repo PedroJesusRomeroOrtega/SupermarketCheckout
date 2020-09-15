@@ -1,11 +1,17 @@
 import { CheckoutService } from '../../checkout.service';
-import { Component, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CheckoutUnit, SkuWithCheckoutUnit } from '../../models';
 
 @Component({
   selector: 'app-sku-checkout',
   templateUrl: './sku-checkout.component.html',
   styleUrls: ['./sku-checkout.component.scss'],
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkuCheckoutComponent implements OnInit {
   @Input() skuWithCheckoutUnit: SkuWithCheckoutUnit;

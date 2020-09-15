@@ -1,3 +1,14 @@
 .sku-card {
-  max-width: 10em;
+  width: 6em;
+  height: 4em;
+  margin: 0.5em;
+}
+.sku-card-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.sku-product {
+  font-size: 3em;
+  text-align: center;
 }
