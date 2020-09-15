@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 import { Sku } from './checkout-detail/sku';
 
@@ -12,7 +12,7 @@ import { Sku } from './checkout-detail/sku';
 export class SkuService {
   skus$ = this.http
     .get<Sku[]>(`${this.baseUrl}api/sku`)
-    .pipe(catchError(this.handleError));
+    .pipe(tap(console.log), catchError(this.handleError));
 
   constructor(
     @Inject('BASE_URL') private baseUrl: string,

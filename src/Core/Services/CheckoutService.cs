@@ -1,6 +1,7 @@
 ﻿using SupermarketCheckout.Core.Entities;
 using SupermarketCheckout.Core.Interfaces;
 using SupermarketCheckout.Core.Specifications;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SupermarketCheckout.Core.Services
@@ -11,6 +12,11 @@ namespace SupermarketCheckout.Core.Services
         public CheckoutService(IAsyncRepository<Checkout> checkoutRespository)
         {
             _checkoutRepository = checkoutRespository;
+        }
+
+        public async Task<IEnumerable<Checkout>> GetCheckouts()
+        {
+            return await _checkoutRepository.ListAllAsync();
         }
 
         public async Task<Checkout> GetOrCreateCheckout(int? checkoutId)

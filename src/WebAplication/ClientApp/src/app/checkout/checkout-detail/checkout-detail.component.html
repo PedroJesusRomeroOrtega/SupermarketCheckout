@@ -1,6 +1,7 @@
-<ul *ngIf="skus$ | async as skus">
-  <li *ngFor="let sku of skus">
-    <app-sku [sku]="sku"></app-sku>
+<ul *ngIf="vm$ | async as vm">
+  Identificator: {{vm.checkout.id}}
+  <li *ngFor="let sku of vm.skusWithCheckoutUnits">
+    <app-sku [skuWithCheckoutUnit]="sku"></app-sku>
   </li>
 </ul>
 <div>

@@ -2,4 +2,8 @@
   <button mat-fab routerLink="/checkout-detail" aria-label="Button to add new checkout">
     <mat-icon>add_shopping_cart</mat-icon>
   </button>
+  <ul *ngIf="checkouts$ | async as checkouts">
+    <li *ngFor="let checkout of checkouts"><span><a [routerLink]="['/checkout-detail', checkout.id]">{{checkout.id}}</a>
+        - {{checkout.date}}</span></li>
+  </ul>
 </div>

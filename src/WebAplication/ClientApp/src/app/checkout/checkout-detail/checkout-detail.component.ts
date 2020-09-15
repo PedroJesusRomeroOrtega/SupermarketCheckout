@@ -1,7 +1,10 @@
-import { SkuService } from './../sku.service';
-import { Component, Inject, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Sku } from './sku';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+
+import { map, tap } from 'rxjs/operators';
+
+import { CheckoutService } from '../checkout.service';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-checkout-detail',
@@ -9,9 +12,28 @@ import { Sku } from './sku';
   styleUrls: ['./checkout-detail.component.scss'],
 })
 export class CheckoutDetailComponent implements OnInit {
-  skus$ = this.skuService.skus$;
+  checkoutId$ = this.route.paramMap
+    .pipe(
+      tap((params: ParamMap) => console.log(params)),
+      map((params: ParamMap) => (params.get('id') ? +params.get('id') : null)),
+      tap((id: number) => this.checkoutService.selectCheckout(id))
+    )
+    .subscribe();
 
-  constructor(private skuService: SkuService) {}
+  checkout$ = this.checkoutService.checkoutSeleted$;
+  skusWithCheckoutUnits$ = this.checkoutService.skusWithCheckoutUnits$;
+
+  vm$ = combineLatest([this.checkout$, this.skusWithCheckoutUnits$]).pipe(
+    map(([checkout, skusWithCheckoutUnits]) => ({
+      checkout,
+      skusWithCheckoutUnits,
+    }))
+  );
+
+  constructor(
+    private route: ActivatedRoute,
+    private checkoutService: CheckoutService
+  ) {}
 
   ngOnInit(): void {}
 }
