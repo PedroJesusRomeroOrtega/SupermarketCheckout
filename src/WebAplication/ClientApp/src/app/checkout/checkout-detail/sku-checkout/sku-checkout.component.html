@@ -1,0 +1,14 @@
+<mat-card class="sku-card">
+  <button mat-icon-button aria-label="Add new unit" (click)="addUnit()">
+    <mat-icon>add_circle</mat-icon>
+  </button>
+  <mat-card-content>
+    <span [matBadge]="skuWithCheckoutUnit.numberOfUnits" matBadgeColor="accent" matBadgeOverlap="false">
+      {{skuWithCheckoutUnit.skuName}}</span>
+
+  </mat-card-content>
+  <mat-card-actions>
+    <span> {{skuWithCheckoutUnit.totalPrice | currency:'EUR':'':'1.0'}} <mat-icon inline>euro_symbol</mat-icon>
+    </span>
+  </mat-card-actions>
+</mat-card>

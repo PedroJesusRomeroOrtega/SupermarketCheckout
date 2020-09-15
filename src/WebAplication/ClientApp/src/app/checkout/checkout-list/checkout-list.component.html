@@ -1,9 +1,23 @@
 <div>
+  <ng-container *ngIf="checkouts$ | async as checkouts">
+    <table mat-table [dataSource]="checkouts" class="mat-elevation-z8">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> Ident </th>
+        <td mat-cell *matCellDef="let checkout"> <a [routerLink]="['/checkout-detail', checkout.id]">{{checkout.id}}</a>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let checkout"> {{checkout.date | date:'medium'}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </ng-container>
+
   <button mat-fab routerLink="/checkout-detail" aria-label="Button to add new checkout">
     <mat-icon>add_shopping_cart</mat-icon>
   </button>
-  <ul *ngIf="checkouts$ | async as checkouts">
-    <li *ngFor="let checkout of checkouts"><span><a [routerLink]="['/checkout-detail', checkout.id]">{{checkout.id}}</a>
-        - {{checkout.date}}</span></li>
-  </ul>
 </div>

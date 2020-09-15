@@ -1,7 +1,6 @@
 import { SkuService } from './sku.service';
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { CheckoutUnit } from './checkout-unit';
 import {
   throwError,
   Observable,
@@ -18,9 +17,7 @@ import {
   distinctUntilChanged,
   filter,
 } from 'rxjs/operators';
-import { Checkout } from './checkout';
-import { SkuWithCheckoutUnit } from './sku-with-checkout-unit';
-import { Sku } from './checkout-detail/sku';
+import { Checkout, CheckoutUnit, SkuWithCheckoutUnit, Sku } from './models';
 
 @Injectable({
   providedIn: 'root',

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
-import { Sku } from './checkout-detail/sku';
+import { Sku } from './models/sku';
 
 @Injectable({
   providedIn: 'root',

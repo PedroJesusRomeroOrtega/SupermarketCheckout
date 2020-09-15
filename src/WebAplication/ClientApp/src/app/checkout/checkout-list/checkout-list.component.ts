@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./checkout-list.component.scss'],
 })
 export class CheckoutListComponent implements OnInit {
+  displayedColumns: string[] = ['id', 'date'];
   checkouts$ = this.checkoutService.checkouts$;
 
   constructor(private checkoutService: CheckoutService) {}
