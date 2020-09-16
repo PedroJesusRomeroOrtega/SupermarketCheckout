@@ -2,14 +2,7 @@ import { SkuService } from './sku.service';
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { throwError, Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import {
-  catchError,
-  switchMap,
-  map,
-  distinctUntilChanged,
-  filter,
-  share,
-} from 'rxjs/operators';
+import { catchError, switchMap, map } from 'rxjs/operators';
 import { Checkout, CheckoutUnit, SkuWithCheckoutUnit, Sku } from './models';
 
 @Injectable({
@@ -20,15 +13,10 @@ export class CheckoutService {
 
   checkouts$ = this.http
     .get<Checkout[]>(`${this.baseUrl}api/checkout`)
-    .pipe(share(), catchError(this.handleError));
+    .pipe(catchError(this.handleError));
 
   private checkoutIdSelectedSubject = new BehaviorSubject<number>(0);
-  checkoutIdSelected$: Observable<
-    number
-  > = this.checkoutIdSelectedSubject.asObservable().pipe(
-    filter((id) => id === null || id > 0),
-    distinctUntilChanged()
-  );
+  checkoutIdSelected$ = this.checkoutIdSelectedSubject.asObservable();
 
   checkoutSelected$: Observable<Checkout> = this.checkoutIdSelected$.pipe(
     switchMap((checkoutId: number) => {
@@ -37,33 +25,33 @@ export class CheckoutService {
         .get<Checkout>(
           `${this.baseUrl}api/checkout/GetOrCreate/${checkoutIdStr}`
         )
-        .pipe(share(), catchError(this.handleError));
+        .pipe(catchError(this.handleError));
     })
   );
 
-  checkoutUnits$ = this.checkoutSelected$.pipe(
+  checkoutAndItsUnits$ = this.checkoutSelected$.pipe(
     switchMap((checkout: Checkout) =>
       this.http
         .get<CheckoutUnit[]>(
           `${this.baseUrl}api/checkout/checkoutUnits/${checkout.id}`
         )
         .pipe(
-          share(),
           map((checkoutUnits) => ({ checkout, checkoutUnits })),
           catchError(this.handleError)
         )
     )
   );
 
-  skusWithCheckoutUnits$: Observable<SkuWithCheckoutUnit[]> = combineLatest([
+  checkoutAndSkusWithUnits$ = combineLatest([
     this.skuService.skus$,
-    this.checkoutUnits$,
+    this.checkoutAndItsUnits$,
   ]).pipe(
-    map(([skus, { checkout, checkoutUnits }]) =>
-      skus.map((s: Sku) =>
+    map(([skus, { checkout, checkoutUnits }]) => ({
+      checkout,
+      skusWithCheckoutUnits: skus.map((s: Sku) =>
         this.createSkuWithCheckoutUnits(s, checkout.id, checkoutUnits)
-      )
-    )
+      ),
+    }))
   );
 
   constructor(
