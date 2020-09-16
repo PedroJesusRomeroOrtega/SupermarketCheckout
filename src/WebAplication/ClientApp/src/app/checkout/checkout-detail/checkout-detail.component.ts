@@ -1,10 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
-import { map, tap } from 'rxjs/operators';
+import { map, switchMap, distinctUntilChanged, tap } from 'rxjs/operators';
 
 import { CheckoutService } from '../checkout.service';
-import { combineLatest } from 'rxjs';
+import { combineLatest, of } from 'rxjs';
 
 @Component({
   selector: 'app-checkout-detail',
@@ -13,19 +13,23 @@ import { combineLatest } from 'rxjs';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckoutDetailComponent implements OnInit {
-  checkoutId$ = this.route.paramMap
-    .pipe(
-      tap((params: ParamMap) => console.log(params)),
-      map((params: ParamMap) => (params.get('id') ? +params.get('id') : null)),
-      tap((id: number) => this.checkoutService.selectCheckout(id))
-    )
-    .subscribe();
+  checkoutId$ = this.route.paramMap.pipe(
+    map((params: ParamMap) => (params.get('id') ? +params.get('id') : null)),
+    distinctUntilChanged(),
+    tap((id) => this.checkoutService.selectCheckout(id))
+    // switchMap((id: number) => of(this.checkoutService.selectCheckout(id)))
+  );
 
-  checkout$ = this.checkoutService.checkoutSeleted$;
+  checkout$ = this.checkoutService.checkoutSelected$;
   skusWithCheckoutUnits$ = this.checkoutService.skusWithCheckoutUnits$;
 
-  vm$ = combineLatest([this.checkout$, this.skusWithCheckoutUnits$]).pipe(
-    map(([checkout, skusWithCheckoutUnits]) => ({
+  vm$ = combineLatest([
+    this.checkoutId$,
+    this.checkout$,
+    this.skusWithCheckoutUnits$,
+  ]).pipe(
+    map(([checkoutId, checkout, skusWithCheckoutUnits]) => ({
+      checkoutId,
       checkout,
       skusWithCheckoutUnits,
     }))
@@ -36,5 +40,7 @@ export class CheckoutDetailComponent implements OnInit {
     private checkoutService: CheckoutService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // const checkoutId = this.route.snapshot.paramMap.get('id')?this.route.snapshot.paramMap.get('id'):null;
+  }
 }
