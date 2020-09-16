@@ -3,13 +3,22 @@
     <table mat-table [dataSource]="checkouts" class="mat-elevation-z8">
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef> Ident </th>
-        <td mat-cell *matCellDef="let checkout"> <a [routerLink]="['/checkout-detail', checkout.id]">{{checkout.id}}</a>
+        <td mat-cell *matCellDef="let checkout"> <a mat-raised-button color="accent"
+            [routerLink]="['/checkout-detail', checkout.id]">{{checkout.id}}</a>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef> Date </th>
         <td mat-cell *matCellDef="let checkout"> {{checkout.date | date:'medium'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalPrice">
+        <th mat-header-cell *matHeaderCellDef> Price </th>
+        <td mat-cell *matCellDef="let checkout"> <span>{{checkout.totalPrice | currency:'EUR':'':'1.0'}} <mat-icon
+              inline>
+              euro_symbol</mat-icon></span>
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

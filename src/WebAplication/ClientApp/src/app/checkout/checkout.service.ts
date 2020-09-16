@@ -1,21 +1,14 @@
 import { SkuService } from './sku.service';
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {
-  throwError,
-  Observable,
-  Subject,
-  EMPTY,
-  combineLatest,
-  BehaviorSubject,
-} from 'rxjs';
+import { throwError, Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import {
   catchError,
-  tap,
   switchMap,
   map,
   distinctUntilChanged,
   filter,
+  share,
 } from 'rxjs/operators';
 import { Checkout, CheckoutUnit, SkuWithCheckoutUnit, Sku } from './models';
 
@@ -27,35 +20,35 @@ export class CheckoutService {
 
   checkouts$ = this.http
     .get<Checkout[]>(`${this.baseUrl}api/checkout`)
-    .pipe(catchError(this.handleError));
+    .pipe(share(), catchError(this.handleError));
 
   private checkoutIdSelectedSubject = new BehaviorSubject<number>(0);
   checkoutIdSelected$: Observable<
     number
   > = this.checkoutIdSelectedSubject.asObservable().pipe(
-    filter((id) => id == null || id > 0),
-    distinctUntilChanged(),
-    tap(console.log)
+    filter((id) => id === null || id > 0),
+    distinctUntilChanged()
   );
 
-  checkoutSeleted$: Observable<Checkout> = this.checkoutIdSelected$.pipe(
+  checkoutSelected$: Observable<Checkout> = this.checkoutIdSelected$.pipe(
     switchMap((checkoutId: number) => {
       const checkoutIdStr = checkoutId ?? '';
       return this.http
         .get<Checkout>(
           `${this.baseUrl}api/checkout/GetOrCreate/${checkoutIdStr}`
         )
-        .pipe(catchError(this.handleError));
+        .pipe(share(), catchError(this.handleError));
     })
   );
 
-  checkoutUnits$ = this.checkoutSeleted$.pipe(
+  checkoutUnits$ = this.checkoutSelected$.pipe(
     switchMap((checkout: Checkout) =>
       this.http
         .get<CheckoutUnit[]>(
           `${this.baseUrl}api/checkout/checkoutUnits/${checkout.id}`
         )
         .pipe(
+          share(),
           map((checkoutUnits) => ({ checkout, checkoutUnits })),
           catchError(this.handleError)
         )
@@ -70,11 +63,7 @@ export class CheckoutService {
       skus.map((s: Sku) =>
         this.createSkuWithCheckoutUnits(s, checkout.id, checkoutUnits)
       )
-    ),
-    tap((su) => {
-      console.log('skuwithcheckoutunit');
-      console.log(su);
-    })
+    )
   );
 
   constructor(
