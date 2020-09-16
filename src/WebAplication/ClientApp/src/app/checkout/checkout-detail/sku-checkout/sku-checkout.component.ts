@@ -5,6 +5,7 @@ import {
   Input,
   ChangeDetectionStrategy,
   OnDestroy,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CheckoutUnit, SkuWithCheckoutUnit } from '../../models';
 import { Subject } from 'rxjs';
@@ -14,13 +15,16 @@ import { takeUntil } from 'rxjs/operators';
   selector: 'app-sku-checkout',
   templateUrl: './sku-checkout.component.html',
   styleUrls: ['./sku-checkout.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkuCheckoutComponent implements OnInit, OnDestroy {
   @Input() skuWithCheckoutUnit: SkuWithCheckoutUnit;
   private destroyed$: Subject<void> = new Subject();
 
-  constructor(private checkoutService: CheckoutService) {}
+  constructor(
+    private checkoutService: CheckoutService,
+    private ref: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {}
 
@@ -39,12 +43,12 @@ export class SkuCheckoutComponent implements OnInit, OnDestroy {
     this.checkoutService
       .addUnit(checkoutUnit)
       .pipe(takeUntil(this.destroyed$))
-      .subscribe(
-        (checkoutUnitResult) =>
-          (this.skuWithCheckoutUnit = {
-            ...this.skuWithCheckoutUnit,
-            ...checkoutUnitResult,
-          })
-      );
+      .subscribe((checkoutUnitResult) => {
+        this.skuWithCheckoutUnit = {
+          ...this.skuWithCheckoutUnit,
+          ...checkoutUnitResult,
+        };
+        this.ref.markForCheck(); // TODO: change the input skuWithCheckoutUnit with an observable and we will not have to use this
+      });
   }
 }

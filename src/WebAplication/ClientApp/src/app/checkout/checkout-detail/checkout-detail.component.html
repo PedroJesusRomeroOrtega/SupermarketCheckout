@@ -1,7 +1,7 @@
 <div *ngIf="vm$ | async as vm">
-  <h1>Checkout: {{vm.checkout.id}}</h1>
+  <h1>Checkout: {{vm.checkoutAndSkusWithUnits.checkout.id}}</h1>
   <div class="flex-container">
-    <app-sku-checkout *ngFor="let skuWithCheckoutUnit of vm.skusWithCheckoutUnits"
+    <app-sku-checkout *ngFor="let skuWithCheckoutUnit of vm.checkoutAndSkusWithUnits.skusWithCheckoutUnits"
       [skuWithCheckoutUnit]="skuWithCheckoutUnit">
     </app-sku-checkout>
   </div>
