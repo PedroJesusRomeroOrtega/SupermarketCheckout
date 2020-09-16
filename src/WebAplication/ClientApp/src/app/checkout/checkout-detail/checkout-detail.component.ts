@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
 import { map, switchMap } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { combineLatest, of } from 'rxjs';
   selector: 'app-checkout-detail',
   templateUrl: './checkout-detail.component.html',
   styleUrls: ['./checkout-detail.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckoutDetailComponent {
   checkoutId$ = this.route.paramMap.pipe(
