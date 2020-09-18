@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SupermarketCheckout.Core.Entities;
 using SupermarketCheckout.Core.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,16 +26,15 @@ namespace SupermarketCheckout.WebAplication.Controllers.CheckoutController
         {
             var checkouts = await _checkoutService.GetCheckouts();
             //TODO: add automapper
-            //TODO: calculate totalprice
-            var checkoutsDto = checkouts.Select(c => new CheckoutDto() { Id = c.Id, Date = c.Date, TotalPrice = 0m });
-            return checkoutsDto.ToList();
+            var checkoutsDto = checkouts.Select(async c => new CheckoutDto() { Id = c.Id, Date = c.Date, TotalPrice = await _skuService.CalculatePrice(c.Units) });
+            return await Task.WhenAll(checkoutsDto);
         }
 
         [HttpGet("GetOrCreate/{checkoutID:int?}")]
         public async Task<ActionResult<CheckoutDto>> GetCheckout(int? checkoutId)
         {
             var checkout = await _checkoutService.GetOrCreateCheckout(checkoutId);
-            var totalPricesTask = checkout.Units.Select(async u => await _skuService.CalculatePrice(u.SkuId, u.NumberOfUnits));
+            var totalPricesTask = _skuService.CalculatePrice(checkout.Units);
             var totalPrices = await Task.WhenAll(totalPricesTask);
             return new CheckoutDto() { Id = checkout.Id, Date = checkout.Date, TotalPrice = totalPrices.Sum() };
         }

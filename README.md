@@ -36,7 +36,7 @@ All the Checkout functionality is inside *checkout* folder.
 
 All the logic is inside *checkout.service.ts* where the interaction with the API has been develop using RXJS.
 
-It has a basic routing with to principal components, *checkout-list* and *checkout-detail*.
+It has a basic routing with two principal components, *checkout-list* and *checkout-detail*.
 
 We have three components:
 
