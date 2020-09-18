@@ -24,10 +24,9 @@ namespace SupermarketCheckout.Core.Services
             return totalPrice;
         }
 
-        //TODO: make test
-        public async Task<decimal> CalculatePrice(IReadOnlyCollection<CheckoutUnit> units)
+        public async Task<decimal> CalculatePrice(IEnumerable<(int skuId, int numberOfUnits)> units)
         {
-            var pricesTask = units.Select(async u => await CalculatePrice(u.SkuId, u.NumberOfUnits));
+            var pricesTask = units.Select(async u => await CalculatePrice(u.skuId, u.numberOfUnits));
             var prices = await Task.WhenAll(pricesTask);
             return prices.Sum();
         }
