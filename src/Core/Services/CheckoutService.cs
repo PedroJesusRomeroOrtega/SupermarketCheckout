@@ -17,7 +17,8 @@ namespace SupermarketCheckout.Core.Services
 
         public async Task<IEnumerable<Checkout>> GetCheckouts()
         {
-            return await _checkoutRepository.ListAllAsync();
+            var checkoutSpecification = new CheckoutWithUnitsSpecification();
+            return await _checkoutRepository.ListAsync(checkoutSpecification);
         }
 
         public async Task<Checkout> GetOrCreateCheckout(int? checkoutId)

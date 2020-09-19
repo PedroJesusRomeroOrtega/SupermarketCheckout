@@ -5,6 +5,14 @@ namespace SupermarketCheckout.Core.Specifications
 {
     public sealed class CheckoutWithUnitsSpecification : Specification<Checkout>
     {
+
+        public CheckoutWithUnitsSpecification()
+        {
+            // TODO: consider use pagination
+            Query
+                .Include(c => c.Units);
+        }
+
         public CheckoutWithUnitsSpecification(int checkoutId)
         {
             Query
