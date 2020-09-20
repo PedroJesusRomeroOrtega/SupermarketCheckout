@@ -1,14 +1,17 @@
 .sku-card {
-  width: 6em;
-  height: 4em;
-  margin: 0.5em;
+  width: 10em;
 }
-.sku-card-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+
+.mat-card > :first-child,
+.mat-card-content > :first-child {
+  margin-top: 0.5em;
 }
-.sku-product {
+
+.sku-unit {
   font-size: 3em;
-  text-align: center;
+}
+
+div .sku-price {
+  font-size: larger;
+  margin: 0.5em;
 }

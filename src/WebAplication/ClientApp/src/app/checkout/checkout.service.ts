@@ -85,10 +85,9 @@ export class CheckoutService {
       skuId: sku.id,
       skuName: sku.name,
       numberOfUnits:
-        this.findCheckoutUnit(checkoutUnits, sku.id)?.numberOfUnits ?? null,
+        this.findCheckoutUnit(checkoutUnits, sku.id)?.numberOfUnits ?? 0,
       checkoutId,
-      totalPrice:
-        this.findCheckoutUnit(checkoutUnits, sku.id)?.totalPrice ?? null,
+      totalPrice: this.findCheckoutUnit(checkoutUnits, sku.id)?.totalPrice ?? 0,
     } as SkuWithCheckoutUnit;
   }
 
