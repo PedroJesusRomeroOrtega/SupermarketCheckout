@@ -78,7 +78,7 @@ namespace SupermarketCheckout.UnitTests.Core.Entities.SkuTests
             var sku = new Sku(_testSkuName);
             sku.AddSkuBasePrice(_testPricePerUnit1);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => sku.CalculatePrice(_testActualDate,_testNegativeNumberOfUnits));
+            Assert.Throws<ArgumentException>(() => sku.CalculatePrice(_testActualDate,_testNegativeNumberOfUnits));
         }
     }
 }

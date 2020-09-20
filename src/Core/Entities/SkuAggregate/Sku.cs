@@ -1,4 +1,5 @@
 ﻿using Ardalis.GuardClauses;
+using Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,14 @@ namespace SupermarketCheckout.Core.Entities
 
         public Sku(string name)
         {
+            Guard.Against.NullOrWhiteSpace(name, nameof(name));
             Name = name;
         }
 
         public void AddSkuBasePrice(decimal pricePerUnit)
         {
+            Guard.Against.Negative(pricePerUnit, nameof(pricePerUnit));
+
             var baseSkuPrice = SkuPrices.FirstOrDefault(sp => sp.OfferStart == null && sp.OfferEnd == null);
             if (baseSkuPrice == null)
             {
@@ -30,21 +34,17 @@ namespace SupermarketCheckout.Core.Entities
 
         public void AddSkuOfferPrice(int UnitsNumber, decimal pricePerUnit, DateTime offerStart, DateTime? offerEnd = null)
         {
-            Guard.Against.OutOfRange(UnitsNumber, nameof(UnitsNumber), 0, int.MaxValue);
-
-            if (SkuPrices.Any(sp => !sp.IsBasePrice()
-            && sp.ExistOfferInRange(offerStart)))
-            {
-                //TODO: creates custom exceptions
-                throw new Exception("There are other offer for the same period");
-            }
+            Guard.Against.NegativeOrZero(UnitsNumber, nameof(UnitsNumber));
+            Guard.Against.Negative(pricePerUnit, nameof(pricePerUnit));
+            Guard.Against.OverlapOffer(SkuPrices, offerStart);
 
             _skuPrices.Add(new SkuPrice(UnitsNumber, pricePerUnit, offerStart, offerEnd));
         }
 
         public decimal CalculatePrice(DateTime date, int numberOfUnits = 1)
         {
-            Guard.Against.OutOfRange(numberOfUnits, nameof(numberOfUnits), 0, int.MaxValue);
+            Guard.Against.OutOfSQLDateRange(date, nameof(date));
+            Guard.Against.NegativeOrZero(numberOfUnits, nameof(numberOfUnits));
 
             var offerPrice = SkuPrices.FirstOrDefault(sp => !sp.IsBasePrice() && sp.ExistOfferInRange(date));
             var basePrice = SkuPrices.First(sp => sp.IsBasePrice());
