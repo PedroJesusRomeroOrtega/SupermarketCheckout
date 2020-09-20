@@ -28,28 +28,39 @@ namespace SupermarketCheckout.Core.Entities
             baseSkuPrice.ModifyPricePerUnit(pricePerUnit);
         }
 
-        public void AddSkuOfferPrice(int minUnitsNumber, decimal pricePerUnit, DateTime offerStart, DateTime? offerEnd = null)
+        public void AddSkuOfferPrice(int UnitsNumber, decimal pricePerUnit, DateTime offerStart, DateTime? offerEnd = null)
         {
-            Guard.Against.OutOfRange(minUnitsNumber, nameof(minUnitsNumber), 0, int.MaxValue);
+            Guard.Against.OutOfRange(UnitsNumber, nameof(UnitsNumber), 0, int.MaxValue);
 
-            if (SkuPrices.Any(sp => sp.MinUnitsNumber == minUnitsNumber 
-            && sp.OfferStart.HasValue
-            && sp.ExistInRange(sp.OfferStart.Value, sp.OfferEnd, offerStart)))
+            if (SkuPrices.Any(sp => !sp.IsBasePrice()
+            && sp.ExistOfferInRange(offerStart)))
             {
                 //TODO: creates custom exceptions
                 throw new Exception("There are other offer for the same period");
             }
 
-            _skuPrices.Add(new SkuPrice(minUnitsNumber, pricePerUnit, offerStart, offerEnd));
+            _skuPrices.Add(new SkuPrice(UnitsNumber, pricePerUnit, offerStart, offerEnd));
         }
 
-        public decimal CalculatePrice(int numberOfUnits = 1)
+        public decimal CalculatePrice(DateTime date, int numberOfUnits = 1)
         {
             Guard.Against.OutOfRange(numberOfUnits, nameof(numberOfUnits), 0, int.MaxValue);
-            var skuPrice= SkuPrices
-                .OrderByDescending(sp=>sp.MinUnitsNumber)
-                .First(sp => sp.MinUnitsNumber <= numberOfUnits);
-            return skuPrice.PricePerUnit * numberOfUnits;
+
+            var offerPrice = SkuPrices.FirstOrDefault(sp => !sp.IsBasePrice() && sp.ExistOfferInRange(date));
+            var basePrice = SkuPrices.First(sp => sp.IsBasePrice());
+
+            var unitsWithoutOffer = numberOfUnits;
+            var priceWithOffer = 0m;
+            if (offerPrice != null)
+            {
+                var unitsWithOffer = (numberOfUnits / offerPrice.UnitsNumber) * offerPrice.UnitsNumber;
+                priceWithOffer = unitsWithOffer * offerPrice.PricePerUnit;
+                unitsWithoutOffer = numberOfUnits % offerPrice.UnitsNumber;
+            }
+
+            var priceWithoutOffer = unitsWithoutOffer * basePrice.PricePerUnit;
+
+            return priceWithOffer + priceWithoutOffer;
         }
     }
 }

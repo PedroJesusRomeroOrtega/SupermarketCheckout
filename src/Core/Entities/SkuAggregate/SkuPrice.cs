@@ -4,16 +4,16 @@ namespace SupermarketCheckout.Core.Entities
 {
     public class SkuPrice : BaseEntity
     {
-        public int MinUnitsNumber { get; private set; }
+        public int UnitsNumber { get; private set; }
         public decimal PricePerUnit { get; private set; }
         public DateTime? OfferStart { get; private set; }
         public DateTime? OfferEnd { get; private set; }
 
         public int SkuId { get; private set; }
 
-        public SkuPrice(int minUnitsNumber, decimal pricePerUnit, DateTime? offerStart = null, DateTime? offerEnd = null)
+        public SkuPrice(int unitsNumber, decimal pricePerUnit, DateTime? offerStart = null, DateTime? offerEnd = null)
         {
-            MinUnitsNumber = minUnitsNumber;
+            UnitsNumber = unitsNumber;
             PricePerUnit = pricePerUnit;
             OfferStart = offerStart;
             OfferEnd = offerEnd;
@@ -24,9 +24,11 @@ namespace SupermarketCheckout.Core.Entities
             PricePerUnit = newPricePerUnit;
         }
 
-        public bool ExistInRange(DateTime rangeStart, DateTime? rangeEnd, DateTime dateToCheck)
+        public bool IsBasePrice() => OfferStart == null && OfferEnd == null;
+
+        public bool ExistOfferInRange(DateTime dateToCheck)
         {
-            return ((rangeStart < dateToCheck) && ((!rangeEnd.HasValue) || (rangeEnd.Value > dateToCheck)));
+            return ((OfferStart <= dateToCheck) && ((!OfferEnd.HasValue) || (OfferEnd.Value > dateToCheck)));
         }
     }
 }

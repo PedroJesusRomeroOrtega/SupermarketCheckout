@@ -8,9 +8,10 @@ namespace SupermarketCheckout.UnitTests.Core.Entities.SkuTests
     {
         private readonly string _testSkuName = "A";
         private readonly decimal _testPricePerUnit1 = 50m;
-        private readonly decimal _testPricePerUnit2 = 43.3m;
         private readonly int _testNumberOfUnits2 = 3;
-        private readonly DateTime _testActualDate = DateTime.Now;
+        private readonly decimal _testPricePerUnit2 = 43.3m;
+        private readonly int _testNegativeNumberOfUnits = -2;
+        private readonly DateTime _testActualDate = DateTime.UtcNow;
 
         [Fact]
         public void CalculateBasePrice()
@@ -19,9 +20,20 @@ namespace SupermarketCheckout.UnitTests.Core.Entities.SkuTests
             sku.AddSkuBasePrice(_testPricePerUnit1);
             sku.AddSkuOfferPrice(_testNumberOfUnits2, _testPricePerUnit2, _testActualDate);
 
-            var price= sku.CalculatePrice();
+            var price= sku.CalculatePrice(_testActualDate);
 
             Assert.Equal(50, price);
+        }
+
+        [Fact]
+        public void CalculatePriceWithoutOffers()
+        {
+            var sku = new Sku(_testSkuName);
+            sku.AddSkuBasePrice(_testPricePerUnit1);
+
+            var price = sku.CalculatePrice(_testActualDate,3);
+
+            Assert.Equal(150, price);
         }
 
         [Fact]
@@ -31,21 +43,42 @@ namespace SupermarketCheckout.UnitTests.Core.Entities.SkuTests
             sku.AddSkuBasePrice(_testPricePerUnit1);
             sku.AddSkuOfferPrice(_testNumberOfUnits2, _testPricePerUnit2, _testActualDate);
 
-            var price = sku.CalculatePrice(2);
+            var price = sku.CalculatePrice(_testActualDate,2);
 
             Assert.Equal(100, price);
         }
 
         [Fact]
-        public void CalculatePriceWithDiscount()
+        public void CalculatePriceWithExactUnitsForDiscount()
         {
             var sku = new Sku(_testSkuName);
             sku.AddSkuBasePrice(_testPricePerUnit1);
             sku.AddSkuOfferPrice(_testNumberOfUnits2, _testPricePerUnit2, _testActualDate);
 
-            var price = sku.CalculatePrice(3);
+            var price = sku.CalculatePrice(_testActualDate,3);
 
             Assert.Equal(130, decimal.Round(price));
+        }
+
+        [Fact]
+        public void CalculatePriceWithDiscountAndOtherWithoutDiscount()
+        {
+            var sku = new Sku(_testSkuName);
+            sku.AddSkuBasePrice(_testPricePerUnit1);
+            sku.AddSkuOfferPrice(_testNumberOfUnits2, _testPricePerUnit2, _testActualDate);
+
+            var price = sku.CalculatePrice(_testActualDate,4);
+
+            Assert.Equal(180, decimal.Round(price));
+        }
+
+        [Fact]
+        public void CanCalculateNegativeNumberOfUnits()
+        {
+            var sku = new Sku(_testSkuName);
+            sku.AddSkuBasePrice(_testPricePerUnit1);
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => sku.CalculatePrice(_testActualDate,_testNegativeNumberOfUnits));
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using SupermarketCheckout.Core.Entities;
 using SupermarketCheckout.Core.Interfaces;
 using SupermarketCheckout.Core.Specifications;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,17 +17,17 @@ namespace SupermarketCheckout.Core.Services
             _skuRepository = skuRepository;
         }
 
-        public async Task<decimal> CalculatePrice(int skuId, int numberOfUnits)
+        public async Task<decimal> CalculatePrice(DateTime date, int skuId, int numberOfUnits)
         {
             var skuSpec = new SkuWithPricesSpecification(skuId);
             var sku = await _skuRepository.FirstAsync(skuSpec);
-            var totalPrice = sku.CalculatePrice(numberOfUnits);
+            var totalPrice = sku.CalculatePrice(date, numberOfUnits);
             return totalPrice;
         }
 
-        public async Task<decimal> CalculatePrice(IEnumerable<(int skuId, int numberOfUnits)> units)
+        public async Task<decimal> CalculatePrice(DateTime date, IEnumerable<(int skuId, int numberOfUnits)> units)
         {
-            var pricesTask = units.Select(async u => await CalculatePrice(u.skuId, u.numberOfUnits));
+            var pricesTask = units.Select(async u => await CalculatePrice(date, u.skuId, u.numberOfUnits));
             var prices = await Task.WhenAll(pricesTask);
             return prices.Sum();
         }
