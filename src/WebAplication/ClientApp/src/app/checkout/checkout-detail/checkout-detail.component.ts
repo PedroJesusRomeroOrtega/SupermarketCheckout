@@ -20,11 +20,13 @@ export class CheckoutDetailComponent {
 
   vm$ = combineLatest([
     this.checkoutId$,
-    this.checkoutService.checkoutAndSkusWithUnits$,
+    this.checkoutService.checkoutSelected$,
+    this.checkoutService.skusWithCheckoutUnits$,
   ]).pipe(
-    map(([checkoutId, checkoutAndSkusWithUnits]) => ({
+    map(([checkoutId, checkout, skusWithCheckoutUnits]) => ({
       checkoutId,
-      checkoutAndSkusWithUnits,
+      checkout,
+      skusWithCheckoutUnits,
     }))
   );
 

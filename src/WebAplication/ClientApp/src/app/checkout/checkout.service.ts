@@ -2,7 +2,7 @@ import { SkuService } from './sku.service';
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { throwError, Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import { catchError, switchMap, map, tap } from 'rxjs/operators';
+import { catchError, switchMap, map, tap, shareReplay } from 'rxjs/operators';
 import { Checkout, CheckoutUnit, SkuWithCheckoutUnit, Sku } from './models';
 
 @Injectable({
@@ -26,7 +26,8 @@ export class CheckoutService {
           `${this.baseUrl}api/checkout/GetOrCreate/${checkoutIdStr}`
         )
         .pipe(catchError(this.handleError));
-    })
+    }),
+    shareReplay()
   );
 
   checkoutAndItsUnits$ = this.checkoutSelected$.pipe(
@@ -42,16 +43,15 @@ export class CheckoutService {
     )
   );
 
-  checkoutAndSkusWithUnits$ = combineLatest([
+  skusWithCheckoutUnits$ = combineLatest([
     this.skuService.skus$,
     this.checkoutAndItsUnits$,
   ]).pipe(
-    map(([skus, { checkout, checkoutUnits }]) => ({
-      checkout,
-      skusWithCheckoutUnits: skus.map((s: Sku) =>
+    map(([skus, { checkout, checkoutUnits }]) =>
+      skus.map((s: Sku) =>
         this.createSkuWithCheckoutUnits(s, checkout.id, checkoutUnits)
-      ),
-    }))
+      )
+    )
   );
 
   constructor(
