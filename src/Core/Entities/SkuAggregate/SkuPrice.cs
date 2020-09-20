@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ardalis.GuardClauses;
+using System;
 
 namespace SupermarketCheckout.Core.Entities
 {
@@ -13,6 +14,9 @@ namespace SupermarketCheckout.Core.Entities
 
         public SkuPrice(int unitsNumber, decimal pricePerUnit, DateTime? offerStart = null, DateTime? offerEnd = null)
         {
+            Guard.Against.NegativeOrZero(unitsNumber, nameof(unitsNumber));
+            Guard.Against.Negative(pricePerUnit, nameof(pricePerUnit));
+
             UnitsNumber = unitsNumber;
             PricePerUnit = pricePerUnit;
             OfferStart = offerStart;
@@ -21,6 +25,7 @@ namespace SupermarketCheckout.Core.Entities
 
         public void ModifyPricePerUnit(decimal newPricePerUnit)
         {
+            Guard.Against.Negative(newPricePerUnit, nameof(newPricePerUnit));
             PricePerUnit = newPricePerUnit;
         }
 
@@ -28,6 +33,7 @@ namespace SupermarketCheckout.Core.Entities
 
         public bool ExistOfferInRange(DateTime dateToCheck)
         {
+            Guard.Against.OutOfSQLDateRange(dateToCheck, nameof(dateToCheck));
             return ((OfferStart <= dateToCheck) && ((!OfferEnd.HasValue) || (OfferEnd.Value > dateToCheck)));
         }
     }

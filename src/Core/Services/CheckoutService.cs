@@ -35,6 +35,7 @@ namespace SupermarketCheckout.Core.Services
 
         public async Task<int> AddUnits(Checkout checkout, int skuId, int numberOfUnits = 1)
         {
+            Guard.Against.NegativeOrZero(numberOfUnits, nameof(numberOfUnits));
             var totalUnits = checkout.AddUnit(skuId, numberOfUnits);
             await _checkoutRepository.UpdateAsync(checkout);
             return totalUnits;
