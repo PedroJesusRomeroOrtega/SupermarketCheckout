@@ -17,7 +17,8 @@ namespace SupermarketCheckout.Core.Services
 
         public async Task<IEnumerable<Checkout>> GetCheckouts()
         {
-            return await _checkoutRepository.ListAllAsync();
+            var checkoutSpecification = new CheckoutWithUnitsSpecification();
+            return await _checkoutRepository.ListAsync(checkoutSpecification);
         }
 
         public async Task<Checkout> GetOrCreateCheckout(int? checkoutId)
@@ -34,6 +35,7 @@ namespace SupermarketCheckout.Core.Services
 
         public async Task<int> AddUnits(Checkout checkout, int skuId, int numberOfUnits = 1)
         {
+            Guard.Against.NegativeOrZero(numberOfUnits, nameof(numberOfUnits));
             var totalUnits = checkout.AddUnit(skuId, numberOfUnits);
             await _checkoutRepository.UpdateAsync(checkout);
             return totalUnits;

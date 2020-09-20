@@ -3,6 +3,7 @@ using SupermarketCheckout.Core.Entities;
 using SupermarketCheckout.Core.Interfaces;
 using SupermarketCheckout.Core.Services;
 using SupermarketCheckout.Core.Specifications;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -26,7 +27,7 @@ namespace SupermarketCheckout.UnitTests.Core.Services.SkuServiceTests
             _mockSkuRepository.Setup(m => m.FirstAsync(It.IsAny<SkuWithPricesSpecification>())).ReturnsAsync(sku);
 
             var skuService = new SkuService(_mockSkuRepository.Object);
-            await skuService.CalculatePrice(sku.Id, 1);
+            await skuService.CalculatePrice(DateTime.UtcNow, sku.Id, 1);
 
             _mockSkuRepository.Verify(m => m.FirstAsync(It.IsAny<SkuWithPricesSpecification>()), Times.Once);
         }

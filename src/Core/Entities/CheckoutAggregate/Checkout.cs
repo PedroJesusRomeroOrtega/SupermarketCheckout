@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ardalis.GuardClauses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,6 +19,8 @@ namespace SupermarketCheckout.Core.Entities
 
         public int AddUnit(int skuId, int numberOfUnits = 1)
         {
+            Guard.Against.NegativeOrZero(numberOfUnits, nameof(numberOfUnits));
+
             var existingUnit = _units.FirstOrDefault(u => u.SkuId == skuId);
             if (existingUnit==null)
             {

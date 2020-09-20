@@ -19,7 +19,7 @@ namespace SupermarketCheckout.Infrastructure.Data
 
         private static IEnumerable<Sku> GetPreconfiguredSkus()
         {
-            var actualDate = DateTime.Now;
+            var actualDate = DateTime.UtcNow;
 
             var skuA = new Sku("A");
             skuA.AddSkuBasePrice(50);

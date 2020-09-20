@@ -2,7 +2,7 @@ import { SkuService } from './sku.service';
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { throwError, Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import { catchError, switchMap, map } from 'rxjs/operators';
+import { catchError, switchMap, map, tap } from 'rxjs/operators';
 import { Checkout, CheckoutUnit, SkuWithCheckoutUnit, Sku } from './models';
 
 @Injectable({
@@ -13,7 +13,7 @@ export class CheckoutService {
 
   checkouts$ = this.http
     .get<Checkout[]>(`${this.baseUrl}api/checkout`)
-    .pipe(catchError(this.handleError));
+    .pipe(tap(console.log), catchError(this.handleError));
 
   private checkoutIdSelectedSubject = new BehaviorSubject<number>(0);
   checkoutIdSelected$ = this.checkoutIdSelectedSubject.asObservable();
