@@ -21,7 +21,7 @@ export class CheckoutDetailComponent {
   vm$ = combineLatest([
     this.checkoutId$,
     this.checkoutService.checkoutSelected$,
-    this.checkoutService.skusWithCheckoutUnits$,
+    this.checkoutService.skusWithCheckoutUnitsWithAdd$,
   ]).pipe(
     map(([checkoutId, checkout, skusWithCheckoutUnits]) => ({
       checkoutId,
