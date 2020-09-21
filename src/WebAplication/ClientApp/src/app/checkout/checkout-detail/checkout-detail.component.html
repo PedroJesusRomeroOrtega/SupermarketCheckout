@@ -1,10 +1,20 @@
-<div *ngIf="vm$ | async as vm">
-  <h1>Checkout: {{vm.checkout.id}}</h1>
+<div *ngIf="vm$ | async as vm" fxLayout="column" fxLayoutAlign="start start">
+  <div class="mat-headline checkout-id">Checkout: {{vm.checkout.id}}</div>
+
+
+
   <div fxLayout="row wrap" fxLayoutGap="1em grid" fxLayoutAlign="flex-start">
     <app-sku-checkout *ngFor="let skuWithCheckoutUnit of vm.skusWithCheckoutUnits"
       [skuWithCheckoutUnit]="skuWithCheckoutUnit">
     </app-sku-checkout>
   </div>
+
+  <mat-card class="mat-subheading-1 mat-card-price">Total
+    price: {{calculateTotal(vm.skusWithCheckoutUnits) | currency:'EUR':'':'1.0'}}
+    <mat-icon inline>
+      euro_symbol
+    </mat-icon>
+  </mat-card>
 </div>
 
 <div>
