@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
+import { combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+import { SkuWithCheckoutUnit } from './../models/sku-with-checkout-unit';
 import { CheckoutService } from '../checkout.service';
-import { combineLatest, of } from 'rxjs';
 
 @Component({
   selector: 'app-checkout-detail',
@@ -20,11 +21,13 @@ export class CheckoutDetailComponent {
 
   vm$ = combineLatest([
     this.checkoutId$,
-    this.checkoutService.checkoutAndSkusWithUnits$,
+    this.checkoutService.checkoutSelected$,
+    this.checkoutService.skusWithCheckoutUnitsWithAdd$,
   ]).pipe(
-    map(([checkoutId, checkoutAndSkusWithUnits]) => ({
+    map(([checkoutId, checkout, skusWithCheckoutUnits]) => ({
       checkoutId,
-      checkoutAndSkusWithUnits,
+      checkout,
+      skusWithCheckoutUnits,
     }))
   );
 
@@ -32,4 +35,8 @@ export class CheckoutDetailComponent {
     private route: ActivatedRoute,
     private checkoutService: CheckoutService
   ) {}
+
+  calculateTotal(scus: SkuWithCheckoutUnit[]): number {
+    return scus.reduce((total, scu) => total + scu.totalPrice, 0);
+  }
 }

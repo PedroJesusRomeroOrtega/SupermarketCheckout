@@ -15,9 +15,8 @@
 
       <ng-container matColumnDef="totalPrice">
         <th mat-header-cell *matHeaderCellDef> Price </th>
-        <td mat-cell *matCellDef="let checkout"> <span>{{checkout.totalPrice | currency:'EUR':'':'1.0'}} <mat-icon
-              inline>
-              euro_symbol</mat-icon></span>
+        <td mat-cell *matCellDef="let checkout">
+          <app-price [price]="checkout.totalPrice"></app-price>
         </td>
       </ng-container>
 
@@ -26,7 +25,7 @@
     </table>
   </ng-container>
 
-  <button mat-fab routerLink="/checkout-detail" aria-label="Button to add new checkout">
+  <button class="add-shopping-cart" mat-fab routerLink="/checkout-detail" aria-label="Button to add new checkout">
     <mat-icon>add_shopping_cart</mat-icon>
   </button>
 </div>

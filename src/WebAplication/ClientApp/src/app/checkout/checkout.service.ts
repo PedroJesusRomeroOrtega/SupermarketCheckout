@@ -1,8 +1,15 @@
 import { SkuService } from './sku.service';
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { throwError, Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import { catchError, switchMap, map, tap } from 'rxjs/operators';
+import {
+  throwError,
+  Observable,
+  combineLatest,
+  BehaviorSubject,
+  Subject,
+  merge,
+} from 'rxjs';
+import { catchError, switchMap, map, shareReplay, scan } from 'rxjs/operators';
 import { Checkout, CheckoutUnit, SkuWithCheckoutUnit, Sku } from './models';
 
 @Injectable({
@@ -13,7 +20,7 @@ export class CheckoutService {
 
   checkouts$ = this.http
     .get<Checkout[]>(`${this.baseUrl}api/checkout`)
-    .pipe(tap(console.log), catchError(this.handleError));
+    .pipe(catchError(this.handleError));
 
   private checkoutIdSelectedSubject = new BehaviorSubject<number>(0);
   checkoutIdSelected$ = this.checkoutIdSelectedSubject.asObservable();
@@ -26,7 +33,8 @@ export class CheckoutService {
           `${this.baseUrl}api/checkout/GetOrCreate/${checkoutIdStr}`
         )
         .pipe(catchError(this.handleError));
-    })
+    }),
+    shareReplay(1)
   );
 
   checkoutAndItsUnits$ = this.checkoutSelected$.pipe(
@@ -42,16 +50,49 @@ export class CheckoutService {
     )
   );
 
-  checkoutAndSkusWithUnits$ = combineLatest([
+  skusWithCheckoutUnits$ = combineLatest([
     this.skuService.skus$,
     this.checkoutAndItsUnits$,
   ]).pipe(
-    map(([skus, { checkout, checkoutUnits }]) => ({
-      checkout,
-      skusWithCheckoutUnits: skus.map((s: Sku) =>
+    map(([skus, { checkout, checkoutUnits }]) =>
+      skus.map((s: Sku) =>
         this.createSkuWithCheckoutUnits(s, checkout.id, checkoutUnits)
-      ),
-    }))
+      )
+    )
+  );
+
+  private addSkuWithCheckoutUnitsSubject = new Subject<SkuWithCheckoutUnit>();
+  addSkuCheckoutUnit$ = this.addSkuWithCheckoutUnitsSubject.asObservable();
+
+  skusWithCheckoutUnitsWithAdd$ = merge(
+    this.skusWithCheckoutUnits$,
+    this.addSkuCheckoutUnit$.pipe(
+      switchMap((skuCheckoutUnit: SkuWithCheckoutUnit) =>
+        this.http
+          .post<CheckoutUnit>(
+            `${this.baseUrl}api/checkout/checkoutUnits`,
+            this.mapToCheckoutUnit(skuCheckoutUnit),
+            {
+              headers: this.headers,
+            }
+          )
+          .pipe(
+            map((cu) => ({ ...skuCheckoutUnit, ...cu } as SkuWithCheckoutUnit)),
+            catchError(this.handleError)
+          )
+      )
+    )
+  ).pipe(
+    scan(
+      (
+        skusWithcheckoutUnits: SkuWithCheckoutUnit[],
+        skuWithcheckoutUnits: SkuWithCheckoutUnit
+      ) =>
+        this.modifySkuWithCheckoutUnits(
+          skusWithcheckoutUnits,
+          skuWithcheckoutUnits
+        )
+    )
   );
 
   constructor(
@@ -60,20 +101,34 @@ export class CheckoutService {
     private skuService: SkuService
   ) {}
 
-  addUnit(checkoutUnit: CheckoutUnit): Observable<CheckoutUnit> {
-    return this.http
-      .post<CheckoutUnit>(
-        `${this.baseUrl}api/checkout/checkoutUnits`,
-        checkoutUnit,
-        {
-          headers: this.headers,
-        }
-      )
-      .pipe(catchError(this.handleError));
+  addUnit(skuWithCheckoutUnit: SkuWithCheckoutUnit): void {
+    this.addSkuWithCheckoutUnitsSubject.next(skuWithCheckoutUnit);
   }
 
   selectCheckout(checkoutId: number): void {
     this.checkoutIdSelectedSubject.next(checkoutId);
+  }
+
+  private modifySkuWithCheckoutUnits(
+    skusWithcheckoutUnits: SkuWithCheckoutUnit[],
+    skuWithcheckoutUnits: SkuWithCheckoutUnit
+  ): SkuWithCheckoutUnit[] {
+    return skusWithcheckoutUnits.map((scu) =>
+      scu.skuId === skuWithcheckoutUnits.skuId
+        ? { ...skuWithcheckoutUnits }
+        : scu
+    );
+  }
+
+  private mapToCheckoutUnit(
+    skuCheckoutUnit: SkuWithCheckoutUnit
+  ): CheckoutUnit {
+    return {
+      checkoutId: skuCheckoutUnit?.checkoutId ?? null,
+      skuId: skuCheckoutUnit.skuId,
+      numberOfUnits: 1,
+      totalPrice: null,
+    };
   }
 
   private createSkuWithCheckoutUnits(
