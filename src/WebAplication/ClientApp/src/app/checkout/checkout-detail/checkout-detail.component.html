@@ -10,10 +10,7 @@
   </div>
 
   <mat-card class="mat-subheading-1 mat-card-price">Total
-    price: {{calculateTotal(vm.skusWithCheckoutUnits) | currency:'EUR':'':'1.0'}}
-    <mat-icon inline>
-      euro_symbol
-    </mat-icon>
+    price: <app-price [price]="calculateTotal(vm.skusWithCheckoutUnits)"></app-price>
   </mat-card>
 </div>
 

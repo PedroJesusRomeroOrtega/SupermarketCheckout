@@ -12,12 +12,14 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatDividerModule } from '@angular/material/divider';
+import { PriceComponent } from './common/price/price.component';
 
 @NgModule({
   declarations: [
     CheckoutListComponent,
     CheckoutDetailComponent,
     SkuCheckoutComponent,
+    PriceComponent,
   ],
   imports: [
     CommonModule,
