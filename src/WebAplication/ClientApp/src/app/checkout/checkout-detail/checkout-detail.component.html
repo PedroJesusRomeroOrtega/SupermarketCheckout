@@ -1,10 +1,17 @@
-<div *ngIf="vm$ | async as vm">
-  <h1>Checkout: {{vm.checkout.id}}</h1>
-  <div class="flex-container">
+<div *ngIf="vm$ | async as vm" fxLayout="column" fxLayoutAlign="start start">
+  <div class="mat-headline checkout-id">Checkout: {{vm.checkout.id}}</div>
+
+
+
+  <div fxLayout="row wrap" fxLayoutGap="1em grid" fxLayoutAlign="flex-start">
     <app-sku-checkout *ngFor="let skuWithCheckoutUnit of vm.skusWithCheckoutUnits"
       [skuWithCheckoutUnit]="skuWithCheckoutUnit">
     </app-sku-checkout>
   </div>
+
+  <mat-card class="mat-subheading-1 mat-card-price">Total
+    price: <app-price [price]="calculateTotal(vm.skusWithCheckoutUnits)"></app-price>
+  </mat-card>
 </div>
 
 <div>

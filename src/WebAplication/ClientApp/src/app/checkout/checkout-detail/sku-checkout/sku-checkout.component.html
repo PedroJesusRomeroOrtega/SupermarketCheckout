@@ -1,14 +1,19 @@
-<div class="sku-card-container">
+<mat-card class="sku-card" fxLayout="column" fxLayoutGap="1em" fxLayoutAlign="center center">
 
-  <mat-card class="sku-card">
-    <button mat-icon-button aria-label="Add new unit" (click)="addUnit()">
+  <div class="sku-unit" [matBadge]="skuWithCheckoutUnit.numberOfUnits" matBadgeColor="accent" matBadgeOverlap="false">
+    {{skuWithCheckoutUnit.skuName}}</div>
+
+  <div>
+    <mat-divider></mat-divider>
+    <div class="sku-price">
+      <app-price [price]="skuWithCheckoutUnit.totalPrice"></app-price>
+    </div>
+    <mat-divider></mat-divider>
+  </div>
+
+  <mat-card-actions>
+    <button mat-button aria-label="Add new unit" (click)="addUnit()">
       <mat-icon>add_circle</mat-icon>
     </button>
-    <span class="sku-product" [matBadge]="skuWithCheckoutUnit.numberOfUnits" matBadgeColor="accent"
-      matBadgeOverlap="false">
-      {{skuWithCheckoutUnit.skuName}}</span>
-
-    <span> {{skuWithCheckoutUnit.totalPrice | currency:'EUR':'':'1.0'}} <mat-icon inline>euro_symbol</mat-icon>
-    </span>
-  </mat-card>
-</div>
+  </mat-card-actions>
+</mat-card>

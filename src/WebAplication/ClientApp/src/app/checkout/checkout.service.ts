@@ -1,15 +1,15 @@
 import { SkuService } from './sku.service';
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { throwError, Observable, combineLatest, BehaviorSubject } from 'rxjs';
 import {
-  catchError,
-  switchMap,
-  map,
-  distinctUntilChanged,
-  filter,
-  share,
-} from 'rxjs/operators';
+  throwError,
+  Observable,
+  combineLatest,
+  BehaviorSubject,
+  Subject,
+  merge,
+} from 'rxjs';
+import { catchError, switchMap, map, shareReplay, scan } from 'rxjs/operators';
 import { Checkout, CheckoutUnit, SkuWithCheckoutUnit, Sku } from './models';
 
 @Injectable({
@@ -20,15 +20,10 @@ export class CheckoutService {
 
   checkouts$ = this.http
     .get<Checkout[]>(`${this.baseUrl}api/checkout`)
-    .pipe(share(), catchError(this.handleError));
+    .pipe(catchError(this.handleError));
 
   private checkoutIdSelectedSubject = new BehaviorSubject<number>(0);
-  checkoutIdSelected$: Observable<
-    number
-  > = this.checkoutIdSelectedSubject.asObservable().pipe(
-    filter((id) => id === null || id > 0),
-    distinctUntilChanged()
-  );
+  checkoutIdSelected$ = this.checkoutIdSelectedSubject.asObservable();
 
   checkoutSelected$: Observable<Checkout> = this.checkoutIdSelected$.pipe(
     switchMap((checkoutId: number) => {
@@ -37,32 +32,66 @@ export class CheckoutService {
         .get<Checkout>(
           `${this.baseUrl}api/checkout/GetOrCreate/${checkoutIdStr}`
         )
-        .pipe(share(), catchError(this.handleError));
-    })
+        .pipe(catchError(this.handleError));
+    }),
+    shareReplay(1)
   );
 
-  checkoutUnits$ = this.checkoutSelected$.pipe(
+  checkoutAndItsUnits$ = this.checkoutSelected$.pipe(
     switchMap((checkout: Checkout) =>
       this.http
         .get<CheckoutUnit[]>(
           `${this.baseUrl}api/checkout/checkoutUnits/${checkout.id}`
         )
         .pipe(
-          share(),
           map((checkoutUnits) => ({ checkout, checkoutUnits })),
           catchError(this.handleError)
         )
     )
   );
 
-  skusWithCheckoutUnits$: Observable<SkuWithCheckoutUnit[]> = combineLatest([
+  skusWithCheckoutUnits$ = combineLatest([
     this.skuService.skus$,
-    this.checkoutUnits$,
+    this.checkoutAndItsUnits$,
   ]).pipe(
     map(([skus, { checkout, checkoutUnits }]) =>
       skus.map((s: Sku) =>
         this.createSkuWithCheckoutUnits(s, checkout.id, checkoutUnits)
       )
+    )
+  );
+
+  private addSkuWithCheckoutUnitsSubject = new Subject<SkuWithCheckoutUnit>();
+  addSkuCheckoutUnit$ = this.addSkuWithCheckoutUnitsSubject.asObservable();
+
+  skusWithCheckoutUnitsWithAdd$ = merge(
+    this.skusWithCheckoutUnits$,
+    this.addSkuCheckoutUnit$.pipe(
+      switchMap((skuCheckoutUnit: SkuWithCheckoutUnit) =>
+        this.http
+          .post<CheckoutUnit>(
+            `${this.baseUrl}api/checkout/checkoutUnits`,
+            this.mapToCheckoutUnit(skuCheckoutUnit),
+            {
+              headers: this.headers,
+            }
+          )
+          .pipe(
+            map((cu) => ({ ...skuCheckoutUnit, ...cu } as SkuWithCheckoutUnit)),
+            catchError(this.handleError)
+          )
+      )
+    )
+  ).pipe(
+    scan(
+      (
+        skusWithcheckoutUnits: SkuWithCheckoutUnit[],
+        skuWithcheckoutUnits: SkuWithCheckoutUnit
+      ) =>
+        this.modifySkuWithCheckoutUnits(
+          skusWithcheckoutUnits,
+          skuWithcheckoutUnits
+        )
     )
   );
 
@@ -72,20 +101,34 @@ export class CheckoutService {
     private skuService: SkuService
   ) {}
 
-  addUnit(checkoutUnit: CheckoutUnit): Observable<CheckoutUnit> {
-    return this.http
-      .post<CheckoutUnit>(
-        `${this.baseUrl}api/checkout/checkoutUnits`,
-        checkoutUnit,
-        {
-          headers: this.headers,
-        }
-      )
-      .pipe(catchError(this.handleError));
+  addUnit(skuWithCheckoutUnit: SkuWithCheckoutUnit): void {
+    this.addSkuWithCheckoutUnitsSubject.next(skuWithCheckoutUnit);
   }
 
   selectCheckout(checkoutId: number): void {
     this.checkoutIdSelectedSubject.next(checkoutId);
+  }
+
+  private modifySkuWithCheckoutUnits(
+    skusWithcheckoutUnits: SkuWithCheckoutUnit[],
+    skuWithcheckoutUnits: SkuWithCheckoutUnit
+  ): SkuWithCheckoutUnit[] {
+    return skusWithcheckoutUnits.map((scu) =>
+      scu.skuId === skuWithcheckoutUnits.skuId
+        ? { ...skuWithcheckoutUnits }
+        : scu
+    );
+  }
+
+  private mapToCheckoutUnit(
+    skuCheckoutUnit: SkuWithCheckoutUnit
+  ): CheckoutUnit {
+    return {
+      checkoutId: skuCheckoutUnit?.checkoutId ?? null,
+      skuId: skuCheckoutUnit.skuId,
+      numberOfUnits: 1,
+      totalPrice: null,
+    };
   }
 
   private createSkuWithCheckoutUnits(
@@ -97,10 +140,9 @@ export class CheckoutService {
       skuId: sku.id,
       skuName: sku.name,
       numberOfUnits:
-        this.findCheckoutUnit(checkoutUnits, sku.id)?.numberOfUnits ?? null,
+        this.findCheckoutUnit(checkoutUnits, sku.id)?.numberOfUnits ?? 0,
       checkoutId,
-      totalPrice:
-        this.findCheckoutUnit(checkoutUnits, sku.id)?.totalPrice ?? null,
+      totalPrice: this.findCheckoutUnit(checkoutUnits, sku.id)?.totalPrice ?? 0,
     } as SkuWithCheckoutUnit;
   }
 

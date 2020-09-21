@@ -12,14 +12,14 @@ namespace SupermarketCheckout.Core.Entities
 
         public CheckoutUnit(int numberOfUnits, int skuId)
         {
-            Guard.Against.OutOfRange(numberOfUnits, nameof(numberOfUnits), 0, int.MaxValue);
+            Guard.Against.NegativeOrZero(numberOfUnits, nameof(numberOfUnits));
             NumberOfUnits = numberOfUnits;
             SkuId = skuId;
         }
 
         public int AddNumberOfUnits(int numberOfUnits)
         {
-            Guard.Against.OutOfRange(numberOfUnits, nameof(numberOfUnits), 0, int.MaxValue);
+            Guard.Against.NegativeOrZero(numberOfUnits, nameof(numberOfUnits));
             NumberOfUnits += numberOfUnits;
             return NumberOfUnits;
         }

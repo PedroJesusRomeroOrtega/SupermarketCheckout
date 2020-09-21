@@ -1,3 +1,4 @@
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { CheckoutRoutingModule } from './checkout-routing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -10,12 +11,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatDividerModule } from '@angular/material/divider';
+import { PriceComponent } from './common/price/price.component';
 
 @NgModule({
   declarations: [
     CheckoutListComponent,
     CheckoutDetailComponent,
     SkuCheckoutComponent,
+    PriceComponent,
   ],
   imports: [
     CommonModule,
@@ -25,6 +29,8 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatTableModule,
     MatCardModule,
     MatBadgeModule,
+    MatDividerModule,
+    FlexLayoutModule,
   ],
 })
 export class CheckoutModule {}
